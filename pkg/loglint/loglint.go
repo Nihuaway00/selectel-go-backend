@@ -239,7 +239,30 @@ func checkFirstArg(pass *analysis.Pass, call *ast.CallExpr, cfg Config) {
 	}
 
 	if cfg.RequireLowercaseStart && !startsWithLowercase(message) {
-		pass.Reportf(call.Args[0].Pos(), "log message should start with a lowercase letter")
+		if lit, ok := call.Args[0].(*ast.BasicLit); ok && lit.Kind == token.STRING {
+			if fixed, ok := buildLowercaseFix(lit.Value, message); ok {
+				pass.Report(analysis.Diagnostic{
+					Pos:     call.Args[0].Pos(),
+					End:     call.Args[0].End(),
+					Message: "log message should start with a lowercase letter",
+					SuggestedFixes: []analysis.SuggestedFix{
+						{
+							TextEdits: []analysis.TextEdit{
+								{
+									Pos:     call.Args[0].Pos(),
+									End:     call.Args[0].End(),
+									NewText: []byte(fixed),
+								},
+							},
+						},
+					},
+				})
+			} else {
+				pass.Reportf(call.Args[0].Pos(), "log message should start with a lowercase letter")
+			}
+		} else {
+			pass.Reportf(call.Args[0].Pos(), "log message should start with a lowercase letter")
+		}
 	}
 
 	if cfg.ForbidSpecialChars && containsSpecialChars(message) {
@@ -274,6 +297,25 @@ func startsWithLowercase(message string) bool {
 		return unicode.IsLower(r)
 	}
 	return true
+}
+
+func buildLowercaseFix(litValue, message string) (string, bool) {
+	runes := []rune(message)
+	for i, r := range runes {
+		if unicode.IsSpace(r) {
+			continue
+		}
+		runes[i] = unicode.ToLower(r)
+		break
+	}
+	correctMessage := string(runes)
+
+	if strings.HasPrefix(litValue, "`") {
+		return "`" + correctMessage + "`", true
+	}
+
+	quoted := strconv.Quote(correctMessage)
+	return quoted, true
 }
 
 func containsNonEnglishLetters(message string) bool {

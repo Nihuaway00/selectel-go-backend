@@ -23,6 +23,12 @@ func TestPluginExample(t *testing.T) {
 		}, "rules/lowercase")
 	})
 
+	t.Run("lowercase-start-fix", func(t *testing.T) {
+		runWithSettingsSuggestedFixes(t, map[string]any{
+			"require-lowercase-start": true,
+		}, "rules/lowercase")
+	})
+
 	t.Run("english-only", func(t *testing.T) {
 		runWithSettings(t, map[string]any{
 			"require-english": true,
@@ -80,4 +86,31 @@ func runWithSettings(t *testing.T, overrides map[string]any, packages ...string)
 	require.NoError(t, err)
 
 	analysistest.Run(t, testdataDir(t), analyzers[0], packages...)
+}
+
+func runWithSettingsSuggestedFixes(t *testing.T, overrides map[string]any, packages ...string) {
+	t.Helper()
+
+	newPlugin, err := register.GetPlugin("loglint")
+	require.NoError(t, err)
+
+	settings := map[string]any{
+		"require-literal":         false,
+		"require-lowercase-start": false,
+		"require-english":         false,
+		"forbid-special-chars":    false,
+		"forbid-sensitive-data":   false,
+	}
+
+	for key, value := range overrides {
+		settings[key] = value
+	}
+
+	plugin, err := newPlugin(settings)
+	require.NoError(t, err)
+
+	analyzers, err := plugin.BuildAnalyzers()
+	require.NoError(t, err)
+
+	analysistest.RunWithSuggestedFixes(t, testdataDir(t), analyzers[0], packages...)
 }
