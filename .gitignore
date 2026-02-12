@@ -1,0 +1,30 @@
+# Go build/test
+/bin/
+/build/
+/dist/
+/out/
+/*.exe
+/*.dll
+/*.so
+/*.dylib
+*.test
+*.prof
+*.out
+coverage*.txt
+*.coverprofile
+
+# Go tools
+/vendor/
+go.work
+go.work.sum
+
+# Local binaries
+/loglint
+/custom-gcl
+
+# IDE/editor
+.idea/
+.vscode/
+
+# OS
+.DS_Store

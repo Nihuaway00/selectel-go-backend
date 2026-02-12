@@ -1,0 +1,24 @@
+version: "2"
+
+linters:
+  default: none
+  enable:
+    - loglint
+
+  settings:
+    custom:
+      loglint:
+        type: module
+        description: Checks log message rules (literal, lowercase, English, special chars, sensitive data)
+        settings:
+          require-literal: true
+          require-lowercase-start: true
+          require-english: true
+          forbid-special-chars: true
+          forbid-sensitive-data: true
+          sensitive-keywords:
+            - password
+            - api_key
+            - token
+          sensitive-patterns:
+            - (?i)secret\\s*[:=]
