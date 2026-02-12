@@ -33,10 +33,10 @@ jobs:
         run: go install github.com/golangci/golangci-lint/v2/cmd/golangci-lint@v2.9.0
 
       - name: Build custom golangci-lint binary
-        run: golangci-lint custom -o ./bin/loglint
+        run: golangci-lint custom
 
       - name: Run custom golangci-lint
-        run: ./bin/loglint run .
+        run: ./custom-gcl run .
 
       - name: Build
         run: go build ./cmd/loglint
