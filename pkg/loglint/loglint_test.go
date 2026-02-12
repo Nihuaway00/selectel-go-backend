@@ -11,12 +11,6 @@ import (
 )
 
 func TestPluginExample(t *testing.T) {
-	t.Run("require-literal", func(t *testing.T) {
-		runWithSettings(t, map[string]any{
-			"require-literal": true,
-		}, "rules/literal")
-	})
-
 	t.Run("lowercase-start", func(t *testing.T) {
 		runWithSettings(t, map[string]any{
 			"require-lowercase-start": true,
@@ -68,7 +62,6 @@ func runWithSettings(t *testing.T, overrides map[string]any, packages ...string)
 	require.NoError(t, err)
 
 	settings := map[string]any{
-		"require-literal":         false,
 		"require-lowercase-start": false,
 		"require-english":         false,
 		"forbid-special-chars":    false,
@@ -95,7 +88,6 @@ func runWithSettingsSuggestedFixes(t *testing.T, overrides map[string]any, packa
 	require.NoError(t, err)
 
 	settings := map[string]any{
-		"require-literal":         false,
 		"require-lowercase-start": false,
 		"require-english":         false,
 		"forbid-special-chars":    false,

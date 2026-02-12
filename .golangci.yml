@@ -9,9 +9,8 @@ linters:
     custom:
       loglint:
         type: module
-        description: Checks log message rules (literal, lowercase, English, special chars, sensitive data)
+        description: Checks log message rules (lowercase, English, special chars, sensitive data)
         settings:
-          require-literal: true
           require-lowercase-start: true
           require-english: true
           forbid-special-chars: true

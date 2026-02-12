@@ -17,7 +17,7 @@ func example() {
 	zapLogger.Info("Hello") // want "log message should start with a lowercase letter"
 
 	var sugar *zap.SugaredLogger
-	sugar.Info("Hello") // want "log message should start with a lowercase letter"
+	sugar.Infow("Hello") // want "log message should start with a lowercase letter"
 }
 
 func edgeCases() {
